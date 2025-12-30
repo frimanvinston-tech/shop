@@ -1,0 +1,7 @@
+
+x = input("Enter first nums ")
+y = input("Enter second num: ")
+print(f"{x} +{y} = {x + y}")
+print("Press Enter pt.continue")
+input()
+cs.system('cls')

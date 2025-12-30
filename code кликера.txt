@@ -1,0 +1,184 @@
+namespace ConsoleApp52
+{
+    internal class Program
+    {
+        
+        static long x = 0;
+        static int n1;
+        static int n2;
+        static int n3;
+        static int n4;
+        static void Main(string[] args)
+        {
+            try
+            {
+                string gg = File.ReadAllText("super.txt");
+            }
+            catch (FileNotFoundException) 
+            {
+                File.WriteAllText("super.txt", $"{0}");
+            }
+
+            
+            klicker();
+        }
+        static void klicker()
+        {
+            string gag;            
+            gag = File.ReadAllText("super.txt");
+            
+            
+            long num = Convert.ToInt64(gag);
+            
+            
+            x = num;
+            
+            
+            Console.WriteLine($"========= Кликер =========");
+            Console.WriteLine($"\nВаши клики - {x}");
+            Console.WriteLine("\nEnter - клик");
+            Console.WriteLine("C - казик");
+            Console.WriteLine("B - кости");
+               
+            Console.WriteLine("");
+
+            ConsoleKeyInfo k = Console.ReadKey(true);
+            if(k.Key == ConsoleKey.Enter)
+            {
+                x += 1;
+                File.WriteAllText("super.txt", $"{x}");
+                Console.Clear();
+                klicker();
+            }
+            else if(k.Key == ConsoleKey.C)
+            {
+                
+                Console.Clear();
+                caz();
+            }
+            else if(k.Key == ConsoleKey.B)
+            {
+                
+                Console.Clear();
+                bones();
+            }
+            else
+            {
+                Console.Clear();
+                klicker();
+            }
+        }
+        static void caz()
+        {
+            Random rnd = new Random();
+            Console.WriteLine("========= казик =========");
+            Console.WriteLine("\nесли хотите в меню назад в ставку напишите <0>!");
+            Console.Write("Ваша ставка: ");
+            long y;
+            y = Convert.ToInt64(Console.ReadLine());
+            long h = y;
+            if (y == 0)
+            {
+                Console.Clear();
+                klicker();
+            }
+            else if (y <= x)
+            {
+                
+                Console.Clear();
+                n1 = rnd.Next(1, 4);
+                n2 = rnd.Next(1, 4);
+                n3 = rnd.Next(1, 4);
+                n4 = rnd.Next(2, 16);
+                Console.WriteLine($"\t {n1} {n2} {n3}");
+                if (n1 == n2 && n2 == n3)
+                {
+                    y *= n4;
+                    x += y;
+                    x -= h;
+                    File.WriteAllText("super.txt", $"{x}");
+                    Console.Clear();
+                    Console.WriteLine($"Вы выиграли ваш счет: {h} * {n4} = {x}");
+                    Console.ReadLine();
+                    Console.Clear();
+                    klicker();
+                }
+                else
+                {
+                    x -= h;
+                    File.WriteAllText("super.txt", $"{x}");
+                    Console.ReadKey();
+                    Console.Clear();
+                    klicker();
+                }
+
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine($"У вас нехватает - {y - x}");
+                Thread.Sleep(3000);
+                Console.Clear();
+                klicker();
+            }
+
+        }
+        static void bones()
+        {
+            Random rnd = new Random();
+            Console.WriteLine("========= Кости =========");
+            Console.WriteLine("\nесли хотите в меню назад в ставку напишите <0>!");
+            Console.Write("Ваша ставка: ");
+            long y;
+            y = Convert.ToInt64(Console.ReadLine());
+            long h = y;
+
+            Console.Write("\nУгадайте правильную кость 1 - 6: ");
+            long i;
+            i = Convert.ToInt64(Console.ReadLine());
+            n1 = rnd.Next(1, 7);
+            if (y == 0)
+            {
+                Console.Clear();
+                klicker();
+            }
+            if (y <= x)
+            {
+
+                if (n1 == i)
+                {
+                    y *= 2;
+                    x += y;
+                    x -= h;
+                    File.WriteAllText("super.txt", $"{x}");
+                    Console.Clear();
+                    Console.WriteLine($"Вы выиграли ваш счет: {h} * {2} = {x}");
+                    Console.ReadLine();
+                    Console.Clear();
+                    klicker();
+                }
+                else
+                {
+                    x -= h;
+                    Console.Clear();
+                    Console.WriteLine($"Правильная кость: {n1}, вы проиграли!");
+                    File.WriteAllText("super.txt", $"{x}");
+                    Console.ReadKey();
+                    Console.Clear();
+                    klicker();
+                }
+            }
+            else
+            {
+                
+                Console.Clear();
+                Console.WriteLine($"У вас нехватает - {y - x}");
+                Thread.Sleep(3000);
+                Console.Clear();
+                klicker();
+            }
+
+
+        }
+    }
+}

@@ -1,0 +1,230 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+void initTests() {
+    ifstream f("tests.txt");
+    if (f.good()) {
+        f.close();
+        return;
+    }
+    f.close();
+
+    ofstream out("tests.txt");
+    out <<
+        "#CATEGORY\nМатематика\n"
+        "#TEST\nДискретная математика\n"
+        "#QUESTION\nЧто такое множество?\n"
+        "Набор элементов\n"
+        "Функция\n"
+        "Матрица\n"
+        "Алгоритм\n"
+        "0\n"
+        "#QUESTION\nЧто обозначает символ ∈ ?\n"
+        "Принадлежность элемента множеству\n"
+        "Объединение\n"
+        "Пересечение\n"
+        "Разность\n"
+        "0\n"
+        "#ENDTEST\n"
+
+        "#CATEGORY\nМатематика\n"
+        "#TEST\nМатематический анализ\n"
+        "#QUESTION\nЧто показывает производная функции?\n"
+        "Скорость изменения функции\n"
+        "Площадь\n"
+        "Корень\n"
+        "Значение\n"
+        "0\n"
+        "#QUESTION\nИнтеграл используется для\n"
+        "Нахождения площади\n"
+        "Производной\n"
+        "Корней\n"
+        "Предела\n"
+        "0\n"
+        "#ENDTEST\n"
+
+        "#CATEGORY\nФизика\n"
+        "#TEST\nКвантовая физика\n"
+        "#QUESTION\nКвант — это\n"
+        "Минимальная порция энергии\n"
+        "Тип волны\n"
+        "Поле\n"
+        "Частица без массы\n"
+        "0\n"
+        "#QUESTION\nФотоэффект — это\n"
+        "Выбивание электронов светом\n"
+        "Отражение\n"
+        "Преломление\n"
+        "Интерференция\n"
+        "0\n"
+        "#ENDTEST\n"
+
+        "#CATEGORY\nФизика\n"
+        "#TEST\nМеханика\n"
+        "#QUESTION\nЕдиница силы в СИ\n"
+        "Ньютон\n"
+        "Джоуль\n"
+        "Ватт\n"
+        "Паскаль\n"
+        "0\n"
+        "#QUESTION\nВторой закон Ньютона\n"
+        "F = m * a\n"
+        "E = m * c^2\n"
+        "A = F * s\n"
+        "p = m * v\n"
+        "0\n"
+        "#ENDTEST\n";
+    out.close();
+}
+
+struct Question {
+    string text;
+    string answers[4];
+    int correct;
+};
+
+int grade12(int correct, int total) {
+    int g = round((double)correct / total * 12);
+    if (g < 1) g = 1;
+    if (g > 12) g = 12;
+    return g;
+}
+
+void adminAddQuestion() {
+    ofstream f("tests.txt", ios::app);
+
+    cin.ignore(); // очищаем перевод строки
+
+    string category, test;
+    cout << "Категория: ";
+    getline(cin, category);
+    cout << "Тест: ";
+    getline(cin, test);
+
+    f << "#CATEGORY\n" << category << endl;
+    f << "#TEST\n" << test << endl;
+
+    Question q;
+    cout << "Текст вопроса: ";
+    getline(cin, q.text);
+
+    for (int i = 0; i < 4; i++) {
+        cout << "Ответ " << i + 1 << ": ";
+        getline(cin, q.answers[i]);
+    }
+
+    cout << "Правильный ответ (1-4): ";
+    cin >> q.correct;
+    q.correct--;
+
+    f << "#QUESTION\n" << q.text << endl;
+    for (int i = 0; i < 4; i++)
+        f << q.answers[i] << endl;
+    f << q.correct << endl;
+    f << "#ENDTEST\n";
+
+    cout << "Вопрос добавлен!\n";
+}
+
+void passTest() {
+    ifstream f("tests.txt");
+    vector<string> tests, categories;
+    string line, lastCat;
+
+    while (getline(f, line)) {
+        if (line == "#CATEGORY")
+            getline(f, lastCat);
+        else if (line == "#TEST") {
+            getline(f, line);
+            tests.push_back(line);
+            categories.push_back(lastCat);
+        }
+    }
+
+    if (tests.empty()) {
+        cout << "Нет тестов!\n";
+        return;
+    }
+
+    cout << "\nВыберите тест:\n";
+    for (int i = 0; i < tests.size(); i++)
+        cout << i + 1 << ". " << categories[i] << " → " << tests[i] << endl;
+
+    int t;
+    cin >> t;
+    if (t < 1 || t > tests.size()) {
+        cout << "Неверный выбор\n";
+        return;
+    }
+    t--;
+
+    f.clear();
+    f.seekg(0);
+
+    int correct = 0, total = 0;
+    bool active = false;
+
+    while (getline(f, line)) {
+        if (line == "#TEST") {
+            getline(f, line);
+            active = (line == tests[t]);
+        }
+        else if (active && line == "#QUESTION") {
+            Question q;
+            total++;
+
+            getline(f, q.text);
+            cout << "\n" << q.text << endl;
+
+            for (int i = 0; i < 4; i++) {
+                getline(f, q.answers[i]);
+                cout << i + 1 << ". " << q.answers[i] << endl;
+            }
+
+            f >> q.correct;
+            f.ignore(); // убрать \n
+
+            int ans;
+            cin >> ans;
+            if (ans - 1 == q.correct)
+                correct++;
+        }
+        else if (line == "#ENDTEST" && active)
+            break;
+    }
+
+    int grade = grade12(correct, total);
+    cout << "\nРезультат: " << correct << "/" << total
+         << "  Оценка: " << grade << endl;
+}
+
+int main() {
+    setlocale(LC_ALL, "ru");
+    initTests();
+
+    while (true) {
+        cout << "\n1. Администратор\n2. Тестируемый\n0. Выход\n";
+        int c;
+        cin >> c;
+
+        if (c == 0) break;
+
+        if (c == 1) {
+            cout << "1. Добавить вопрос\n";
+            cin >> c;
+            if (c == 1) adminAddQuestion();
+        }
+        else if (c == 2) {
+            cout << "1. Пройти тест\n";
+            cin >> c;
+            if (c == 1) passTest();
+        }
+    }
+
+    return 0;
+}
