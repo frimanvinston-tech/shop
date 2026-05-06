@@ -1,0 +1,27 @@
+ [
+    {
+        "id": 1,
+       "name": "необагощенный coco-shne-ne",
+        "price": 1488,
+        "image": "./image.png"
+    },
+       {
+        "id": 2,
+        "name": "Абогащенный pepe-shne-ne",
+        "price": 1488,
+        "image": "/images/image.png"
+    },
+       {
+        "id": 3,
+        "name": "demidrol",
+        "price": 1467,
+        "image":" /images/rt.png"
+    },
+       {
+        "id": 4,
+        "name": "Компьютер",
+        "price": 1488,
+        "image": "/images/ppp.png"
+    }
+
+]

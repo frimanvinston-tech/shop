@@ -1,0 +1,16 @@
+<%- include('components/top') %>
+
+<h2>Продукты</h2>
+<div class="products">
+    <% for (const prod of products){ %>
+    <div class="card">
+        <img src="<%= prod.image %>" alt="<%= prod.name  %>" class="card-image">
+        <div class="card-elemenst">
+            <p class="card-title"><%= prod.name %></p>
+            <p class="card-price"><%= prod.price %></p>
+            <button class="card-add">卐</button>
+        </div>
+    </div>
+    <% } %>
+</div>
+<%- include('components/bottom') %>
